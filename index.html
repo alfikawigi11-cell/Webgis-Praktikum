@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Geospatial Mashup Boyolali</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+
+  <!-- Leaflet JS -->
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    .info.legend {
+      background: white;
+      padding: 10px;
+      font-size: 12px;
+      line-height: 18px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.3);
+    }
+
+    .info.legend i {
+      width: 18px;
+      height: 18px;
+      float: left;
+      margin-right: 8px;
+      opacity: 0.7;
+    }
+  </style>
+</head>
+
+<body>
+<div id="map"></div>
+
+<script>
+  // ===============================
+  // FIX ICON DEFAULT (biar biru muncul)
+  // ===============================
+  var DefaultIcon = L.icon({
+    iconUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png',
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41]
+  });
+
+  L.Marker.prototype.options.icon = DefaultIcon;
+
+  // ===============================
+  // PETA
+  // ===============================
+  var map = L.map('map').setView([-7.5333, 110.5950], 13);
+
+  L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: '&copy; OpenStreetMap contributors'
+  }).addTo(map);
+
+  // ===============================
+  // MARKER (ikon biru)
+  // ===============================
+  var marker = L.marker([-7.5333, 110.5950]).addTo(map);
+  marker.bindPopup('<b>Pusat Kota Boyolali</b>');
+
+  // ===============================
+  // CIRCLE
+  // ===============================
+  var circle = L.circle([-7.5333, 110.5950], {
+    color: '#FF1493',
+    fillColor: '#FFC0CB',
+    fillOpacity: 0.5,
+    radius: 10000
+  }).addTo(map);
+
+  circle.bindPopup('Radius ±10 km (cakupan Boyolali)');
+
+  // ===============================
+  // POLYGON
+  // ===============================
+  var kecamatan = L.polygon([
+    [-7.515259488948956, 110.5942838501561],
+    [-7.520716170427264, 110.59224331925549],
+    [-7.522915574116411, 110.59162241391476],
+    [-7.526873867944644, 110.59073555599349],
+    [-7.5310963717445105, 110.59073499664652],
+    [-7.5345287140835495, 110.59108903696],
+    [-7.535319313192701, 110.59011352353758],
+    [-7.539983852980484, 110.58913644085811],
+    [-7.546486292020774, 110.60648391202972],
+    [-7.54163057798668, 110.60817809221066],
+    [-7.538637634518935, 110.61175486314062],
+    [-7.5384735619932, 110.61676938679932],
+    [-7.532450448214007, 110.61639464459938],
+    [-7.531912936659523, 110.61129368614684],
+    [-7.52996538233667, 110.60495884120718],
+    [-7.526877004138072, 110.60584387332881],
+    [-7.525818783153326, 110.6045958969064],
+    [-7.517977925917336, 110.60707838292001],
+    [-7.515259488948956, 110.5942838501561]
+  ], {
+    color: 'green',
+    fillColor: '#0000ff',
+    fillOpacity: 0.2
+  }).addTo(map);
+
+  kecamatan.bindPopup('Kecamatan Boyolali');
+
+  // ===============================
+  // POLYLINE (JALAN, BUKAN TOL)
+  // ===============================
+  var jalan = L.polyline([
+    [-7.538595, 110.616530], // Simpang Mojosongo
+    [-7.534910, 110.681265]  // Simpang Pengging
+  ], {
+    color: 'red',
+    weight: 4
+  }).addTo(map);
+
+  jalan.bindPopup('Jalur Jalan: Simpang Mojosongo - Simpang Pengging');
+
+  // ===============================
+  // LEGEND
+  // ===============================
+  var legend = L.control({ position: "bottomright" });
+
+  legend.onAdd = function () {
+    var div = L.DomUtil.create("div", "info legend");
+
+    div.innerHTML += "<h4>Keterangan</h4>";
+    div.innerHTML += '<i style="background:blue"></i> Pusat Kota<br>';
+    div.innerHTML += '<i style="background:#FF1493"></i> Radius Wilayah Kabupaten<br>';
+    div.innerHTML += '<i style="background:green"></i> Kecamatan Boyolali<br>';
+    div.innerHTML += '<i style="background:red"></i> Simpang Mojosongo-Simpang Pengging<br>';
+
+    return div;
+  };
+
+  legend.addTo(map);
+
+</script>
+</body>
+</html>
